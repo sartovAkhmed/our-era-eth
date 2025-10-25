@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { RefreshCwIcon } from "lucide-react";
 import { useAccount } from "wagmi";
-import { CameraIcon, DocumentTextIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { CameraIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const ExecutorPage = () => {
@@ -11,12 +12,10 @@ const ExecutorPage = () => {
   const [imageHash, setImageHash] = useState("");
   const [documentHash, setDocumentHash] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [availableTrees, setAvailableTrees] = useState<any[]>([]);
   const [selectedTree, setSelectedTree] = useState<any>(null);
-  const [showAvailableTrees, setShowAvailableTrees] = useState(false);
 
   // Читаем статистику пользователя
-  const { data: userStats } = useScaffoldReadContract({
+  const { data: userStats, refetch: refetchUserStats } = useScaffoldReadContract({
     contractName: "TreeChain",
     functionName: "getUserStats",
     args: [connectedAddress],
@@ -27,22 +26,15 @@ const ExecutorPage = () => {
     contractName: "TreeChain",
   });
 
-  // Функция для получения доступных деревьев (симуляция)
-  const loadAvailableTrees = async () => {
-    // В реальном приложении здесь был бы запрос к API или смарт-контракту
-    // Пока что создаем тестовые данные
-    const mockTrees = [
-      { id: 1, species: "Дуб", location: "Москва, парк Сокольники", donor: "0x123...", status: "available" },
-      { id: 2, species: "Сосна", location: "Санкт-Петербург, Летний сад", donor: "0x456...", status: "available" },
-      { id: 3, species: "Береза", location: "Казань, парк Горького", donor: "0x789...", status: "available" },
-    ];
-    setAvailableTrees(mockTrees);
-  };
+  // Функция для получения информации о конкретном дереве
+  const { data: treeData, refetch: refetchTree } = useScaffoldReadContract({
+    contractName: "TreeChain",
+    functionName: "getTree",
+    args: treeId ? [BigInt(treeId)] : undefined,
+  });
 
   // Функция для загрузки файла в IPFS (симуляция)
   const uploadToIPFS = async (file: File): Promise<string> => {
-    // В реальном приложении здесь была бы интеграция с IPFS
-    // Пока что возвращаем случайный хеш
     const randomHash = "Qm" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     return randomHash;
   };
@@ -81,21 +73,44 @@ const ExecutorPage = () => {
     }
   };
 
-  // Обработчик выбора дерева
-  const handleTreeSelect = (tree: any) => {
-    setTreeId(tree.id.toString());
-    setSelectedTree(tree);
-    setShowAvailableTrees(false);
+  // Обработчик ручного ввода ID дерева
+  const handleTreeIdChange = (value: string) => {
+    setTreeId(value);
+    setSelectedTree(null);
+    if (value) {
+      // Если введен ID, пытаемся загрузить данные о дереве
+      refetchTree();
+    }
   };
 
-  // Загружаем доступные деревья при монтировании компонента
+  // Обновляем выбранное дерево при загрузке данных
   useEffect(() => {
-    loadAvailableTrees();
-  }, []);
+    if (treeData && treeId) {
+      setSelectedTree({
+        id: parseInt(treeId),
+        treeCount: treeData.treeCount?.toString() || "1",
+        location: treeData.location,
+        donor: treeData.donor,
+        donationAmount: treeData.donationAmount ? (Number(treeData.donationAmount) / 1e18).toFixed(4) + " ETH" : "N/A",
+        executor: treeData.executor,
+        isVerified: treeData.isVerified,
+      });
+    }
+  }, [treeData, treeId]);
 
   const handlePlantTree = async () => {
     if (!treeId || !imageHash || !documentHash) {
       alert("Пожалуйста, заполните все поля");
+      return;
+    }
+
+    if (selectedTree?.executor && selectedTree.executor !== "0x0000000000000000000000000000000000000000") {
+      alert("Это дерево уже посажено другим исполнителем");
+      return;
+    }
+
+    if (selectedTree?.isVerified) {
+      alert("Это дерево уже верифицировано");
       return;
     }
 
@@ -110,6 +125,8 @@ const ExecutorPage = () => {
       setTreeId("");
       setImageHash("");
       setDocumentHash("");
+      setSelectedTree(null);
+      refetchUserStats();
     } catch (error) {
       console.error("Ошибка при отправке отчета:", error);
       alert("Ошибка при отправке отчета. Проверьте консоль для подробностей.");
@@ -135,7 +152,7 @@ const ExecutorPage = () => {
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🌱</div>
           <h1 className="text-4xl font-bold text-green-600 mb-4">Исполнитель</h1>
-          <p className="text-lg text-gray-600">Сажайте деревья и получайте награды в токенах</p>
+          <p className="text-lg text-gray-600">Сажайте деревья и получайте награды в ETH</p>
         </div>
 
         {/* Статистика пользователя */}
@@ -160,50 +177,48 @@ const ExecutorPage = () => {
           <div className="space-y-6">
             {/* Выбор дерева */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Выберите дерево для посадки *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">ID дерева для посадки *</label>
               <div className="space-y-2">
                 <div className="flex gap-2">
                   <input
-                    type="text"
+                    type="number"
                     value={treeId}
-                    onChange={e => setTreeId(e.target.value)}
-                    placeholder="ID дерева или выберите из списка"
+                    onChange={e => handleTreeIdChange(e.target.value)}
+                    placeholder="Введите ID дерева, полученный от донора"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowAvailableTrees(!showAvailableTrees)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
+                    onClick={() => refetchTree()}
+                    disabled={!treeId}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    <EyeIcon className="h-4 w-4" />
-                    Выбрать
+                    <RefreshCwIcon className="h-4 w-4" />
+                    Проверить
                   </button>
                 </div>
-
-                {showAvailableTrees && (
-                  <div className="border border-gray-300 rounded-md max-h-40 overflow-y-auto">
-                    {availableTrees.map(tree => (
-                      <div
-                        key={tree.id}
-                        onClick={() => handleTreeSelect(tree)}
-                        className="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-200 last:border-b-0"
-                      >
-                        <div className="font-medium">
-                          Дерево #{tree.id} - {tree.species}
-                        </div>
-                        <div className="text-sm text-gray-600">{tree.location}</div>
-                        <div className="text-xs text-gray-500">Донор: {tree.donor}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <p className="text-sm text-gray-500">
+                  ID дерева должен быть предоставлен донором, который купил дерево
+                </p>
 
                 {selectedTree && (
                   <div className="p-3 bg-green-50 rounded-md">
                     <div className="font-medium text-green-800">
-                      Выбрано: Дерево #{selectedTree.id} - {selectedTree.species}
+                      Информация о дереве #{selectedTree.id} - {selectedTree.treeCount} деревьев
                     </div>
                     <div className="text-sm text-green-600">{selectedTree.location}</div>
+                    <div className="text-xs text-green-500">
+                      Донор: {selectedTree.donor} • Сумма: {selectedTree.donationAmount}
+                    </div>
+                    {selectedTree.executor &&
+                      selectedTree.executor !== "0x0000000000000000000000000000000000000000" && (
+                        <div className="text-xs text-red-500 mt-1">
+                          ⚠️ Уже посажено исполнителем: {selectedTree.executor}
+                        </div>
+                      )}
+                    {selectedTree.isVerified && (
+                      <div className="text-xs text-red-500 mt-1">⚠️ Дерево уже верифицировано</div>
+                    )}
                   </div>
                 )}
               </div>
@@ -255,13 +270,25 @@ const ExecutorPage = () => {
 
             <div className="bg-yellow-50 p-4 rounded-lg">
               <h3 className="font-semibold mb-2">Награда за посадку:</h3>
-              <p className="text-lg font-bold text-green-600">0.008 ETH</p>
-              <p className="text-sm text-gray-600 mt-1">Награда будет выплачена после верификации посадки</p>
+              <p className="text-lg font-bold text-green-600">
+                {selectedTree ? (Number(selectedTree.treeCount) * 0.008).toFixed(4) : "0.008"} ETH
+              </p>
+              <p className="text-sm text-gray-600 mt-1">
+                {selectedTree ? `За ${selectedTree.treeCount} деревьев` : "За одно дерево"}. Награда будет выплачена
+                после верификации посадки
+              </p>
             </div>
 
             <button
               onClick={handlePlantTree}
-              disabled={isLoading || !treeId || !imageHash || !documentHash}
+              disabled={
+                isLoading ||
+                !treeId ||
+                !imageHash ||
+                !documentHash ||
+                (selectedTree?.executor && selectedTree.executor !== "0x0000000000000000000000000000000000000000") ||
+                selectedTree?.isVerified
+              }
               className="w-full bg-green-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? "Отправка..." : "Отправить отчет"}
@@ -277,10 +304,9 @@ const ExecutorPage = () => {
               <h4 className="font-semibold text-green-800 mb-2">🌳 ID дерева</h4>
               <p className="text-sm text-gray-700 mb-2">Способы получения ID дерева:</p>
               <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                <li>• Используйте кнопку "Выбрать" для просмотра доступных деревьев</li>
                 <li>• Получите ID от донора, который купил дерево</li>
                 <li>• Обратитесь к администратору платформы</li>
-                <li>• Проверьте страницу отладки для просмотра всех деревьев</li>
+                <li>• Проверьте корректность ID с помощью кнопки "Проверить"</li>
               </ul>
             </div>
 
