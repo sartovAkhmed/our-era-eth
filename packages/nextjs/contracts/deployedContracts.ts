@@ -317,9 +317,9 @@ const deployedContracts = {
             },
             {
               indexed: false,
-              internalType: "string",
-              name: "species",
-              type: "string",
+              internalType: "uint256",
+              name: "treeCount",
+              type: "uint256",
             },
             {
               indexed: false,
@@ -497,6 +497,30 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "address",
+              name: "enterprise",
+              type: "address",
+            },
+          ],
+          name: "getEnterpriseStats",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "_donatedTrees",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_totalSpent",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "getPlatformStats",
           outputs: [
@@ -542,9 +566,9 @@ const deployedContracts = {
                   type: "uint256",
                 },
                 {
-                  internalType: "string",
-                  name: "species",
-                  type: "string",
+                  internalType: "uint256",
+                  name: "treeCount",
+                  type: "uint256",
                 },
                 {
                   internalType: "string",
@@ -724,9 +748,9 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "string",
-              name: "species",
-              type: "string",
+              internalType: "uint256",
+              name: "treeCount",
+              type: "uint256",
             },
             {
               internalType: "string",
@@ -735,6 +759,29 @@ const deployedContracts = {
             },
           ],
           name: "purchaseTree",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "treeCount",
+              type: "uint256",
+            },
+            {
+              internalType: "string",
+              name: "location",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "enterpriseName",
+              type: "string",
+            },
+          ],
+          name: "purchaseTreeAsEnterprise",
           outputs: [],
           stateMutability: "payable",
           type: "function",
@@ -957,9 +1004,9 @@ const deployedContracts = {
               type: "uint256",
             },
             {
-              internalType: "string",
-              name: "species",
-              type: "string",
+              internalType: "uint256",
+              name: "treeCount",
+              type: "uint256",
             },
             {
               internalType: "string",

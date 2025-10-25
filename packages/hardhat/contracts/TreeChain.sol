@@ -17,7 +17,7 @@ contract TreeChain is ERC721, Ownable, ReentrancyGuard {
     
     struct Tree {
         uint256 id;
-        string species;           // Вид дерева
+        uint256 treeCount;        // Количество деревьев
         string location;          // Геолокация (координаты)
         string imageHash;         // IPFS хеш фотографии
         string documentHash;      // IPFS хеш документов
@@ -50,17 +50,17 @@ contract TreeChain is ERC721, Ownable, ReentrancyGuard {
     uint256 public totalRewardsPaid;
     
     // Цены и награды
-    uint256 public constant TREE_PRICE = 0.01 ether;  // Цена за посадку дерева
-    uint256 public constant EXECUTOR_REWARD = 0.008 ether;  // Награда исполнителю
-    uint256 public constant PLATFORM_FEE = 0.002 ether;  // Комиссия платформы
-    
+    uint256 public constant TREE_PRICE = 0.01 ether;  // Цена за посадку одного дерева
+    uint256 public constant EXECUTOR_REWARD = 0.008 ether;  // Награда исполнителю за одно дерево
+    uint256 public constant PLATFORM_FEE = 0.002 ether;  // Комиссия платформы за одно дерево
+
     // ============ EVENTS ============
     
     event TreePurchased(
         uint256 indexed treeId,
         address indexed donor,
         uint256 amount,
-        string species,
+        uint256 treeCount,
         string location
     );
     
@@ -97,16 +97,16 @@ contract TreeChain is ERC721, Ownable, ReentrancyGuard {
     // ============ EXTERNAL FUNCTIONS ============
     
     /**
-     * @dev Покупка NFT дерева донором
-     * @param species Вид дерева
+     * @dev Покупка NFT деревьев донором
+     * @param treeCount Количество деревьев
      * @param location Геолокация для посадки
      */
     function purchaseTree(
-        string memory species,
+        uint256 treeCount,
         string memory location
     ) external payable nonReentrant {
-        require(msg.value >= TREE_PRICE, "Insufficient payment");
-        require(bytes(species).length > 0, "Species cannot be empty");
+        require(treeCount > 0, "Tree count must be positive");
+        require(msg.value >= TREE_PRICE * treeCount, "Insufficient payment");
         require(bytes(location).length > 0, "Location cannot be empty");
         
         _treeIds++;
@@ -120,27 +120,77 @@ contract TreeChain is ERC721, Ownable, ReentrancyGuard {
         // Создаем запись о дереве
         trees[treeId] = Tree({
             id: treeId,
-            species: species,
+            treeCount: treeCount,
             location: location,
             imageHash: "",
             documentHash: "",
             donor: msg.sender,
             executor: address(0),
             donationAmount: msg.value,
-            rewardAmount: EXECUTOR_REWARD,
+            rewardAmount: EXECUTOR_REWARD * treeCount,
             isVerified: false,
             plantedAt: 0,
             verifiedAt: 0
         });
         
         // Обновляем статистику
-        donorTreeCount[msg.sender]++;
-        totalTreesPlanted++;
+        donorTreeCount[msg.sender] += treeCount;
+        totalTreesPlanted += treeCount;
         totalDonations += msg.value;
         
-        emit TreePurchased(treeId, msg.sender, msg.value, species, location);
+        emit TreePurchased(treeId, msg.sender, msg.value, treeCount, location);
         
-        console.log("Tree purchased by %s for %s ETH", msg.sender, msg.value);
+        console.log("Trees purchased by %s: %s trees for %s ETH", msg.sender, treeCount, msg.value);
+    }
+
+    /**
+     * @dev Покупка NFT деревьев предприятием
+     * @param treeCount Количество деревьев
+     * @param location Геолокация для посадки
+     * @param enterpriseName Название предприятия
+     */
+    function purchaseTreeAsEnterprise(
+        uint256 treeCount,
+        string memory location,
+        string memory enterpriseName
+    ) external payable nonReentrant {
+        require(treeCount > 0, "Tree count must be positive");
+        require(msg.value >= TREE_PRICE * treeCount, "Insufficient payment");
+        require(bytes(location).length > 0, "Location cannot be empty");
+        require(bytes(enterpriseName).length > 0, "Enterprise name cannot be empty");
+        
+        _treeIds++;
+        uint256 treeId = _treeIds;
+        
+        // Создаем NFT для донора
+        _tokenIds++;
+        uint256 tokenId = _tokenIds;
+        _mint(msg.sender, tokenId);
+        
+        // Создаем запись о дереве
+        trees[treeId] = Tree({
+            id: treeId,
+            treeCount: treeCount,
+            location: location,
+            imageHash: "",
+            documentHash: "",
+            donor: msg.sender,
+            executor: address(0),
+            donationAmount: msg.value,
+            rewardAmount: EXECUTOR_REWARD * treeCount,
+            isVerified: false,
+            plantedAt: 0,
+            verifiedAt: 0
+        });
+        
+        // Обновляем статистику
+        donorTreeCount[msg.sender] += treeCount;
+        totalTreesPlanted += treeCount;
+        totalDonations += msg.value;
+        
+        emit TreePurchased(treeId, msg.sender, msg.value, treeCount, location);
+        
+        console.log("Trees purchased by enterprise %s: %s trees for %s ETH", enterpriseName, treeCount, msg.value);
     }
     
     /**
@@ -185,7 +235,7 @@ contract TreeChain is ERC721, Ownable, ReentrancyGuard {
             
             // Начисляем награду исполнителю
             address executor = trees[treeId].executor;
-            executorTreeCount[executor]++;
+            executorTreeCount[executor] += trees[treeId].treeCount;
             totalRewardsPaid += trees[treeId].rewardAmount;
             
             // Переводим награду исполнителю
@@ -207,6 +257,20 @@ contract TreeChain is ERC721, Ownable, ReentrancyGuard {
     function getTree(uint256 treeId) external view returns (Tree memory tree) {
         require(treeId > 0 && treeId <= _treeIds, "Invalid tree ID");
         return trees[treeId];
+    }
+
+    /**
+     * @dev Получение статистики предприятия
+     * @param enterprise Адрес предприятия
+     */
+    function getEnterpriseStats(address enterprise) external view returns (
+        uint256 _donatedTrees,
+        uint256 _totalSpent
+    ) {
+        return (
+            donorTreeCount[enterprise],
+            donorTreeCount[enterprise] * TREE_PRICE
+        );
     }
     
     /**

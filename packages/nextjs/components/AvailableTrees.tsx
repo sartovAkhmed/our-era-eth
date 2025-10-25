@@ -5,12 +5,13 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 interface Tree {
   id: number;
-  species: string;
+  treeCount: number;
   location: string;
   donor: string;
   executor: string;
   isVerified: boolean;
   plantedAt: number;
+  donationAmount: string;
 }
 
 const AvailableTrees = () => {
@@ -35,11 +36,17 @@ const AvailableTrees = () => {
       for (let i = 1; i <= totalTrees; i++) {
         try {
           // В реальном приложении здесь был бы вызов getTree
-          // Пока что создаем тестовые данные
+          // Пока что создаем тестовые данные с правильной структурой
           const mockTree: Tree = {
             id: i,
-            species: ["Дуб", "Сосна", "Береза", "Клен", "Липа"][i % 5],
-            location: `Локация ${i}`,
+            treeCount: Math.floor(Math.random() * 5) + 1, // 1-5 деревьев
+            location: [
+              "Москва, парк Сокольники",
+              "Санкт-Петербург, Летний сад",
+              "Казань, парк Горького",
+              "Сочи, дендрарий",
+              "Екатеринбург, Харитоновский парк",
+            ][i % 5],
             donor: `0x${Math.random().toString(16).substr(2, 8)}...`,
             executor:
               i % 3 === 0
@@ -47,6 +54,7 @@ const AvailableTrees = () => {
                 : "0x0000000000000000000000000000000000000000",
             isVerified: i % 4 === 0,
             plantedAt: i % 3 === 0 ? Date.now() / 1000 : 0,
+            donationAmount: ((Math.floor(Math.random() * 5) + 1) * 0.01).toFixed(3) + " ETH",
           };
           availableTrees.push(mockTree);
         } catch (error) {
@@ -63,8 +71,8 @@ const AvailableTrees = () => {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-lg font-semibold mb-4">Доступные деревья для посадки</h3>
+      <div className="bg-white rounded-3xl shadow-lg p-6">
+        <h3 className="text-lg font-semibold mb-4">🌳 Доступные деревья для посадки</h3>
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
           <p className="mt-2 text-gray-600">Загрузка...</p>
@@ -76,6 +84,9 @@ const AvailableTrees = () => {
   const availableTrees = trees.filter(
     tree => tree.executor === "0x0000000000000000000000000000000000000000" && !tree.isVerified,
   );
+
+  const totalTreesCount = trees.reduce((sum, tree) => sum + tree.treeCount, 0);
+  const availableTreesCount = availableTrees.reduce((sum, tree) => sum + tree.treeCount, 0);
 
   return (
     <div className="bg-white rounded-3xl shadow-lg p-6">
@@ -92,15 +103,21 @@ const AvailableTrees = () => {
           {availableTrees.map(tree => (
             <div key={tree.id} className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
               <div className="flex justify-between items-start">
-                <div>
-                  <div className="font-medium text-green-800">
-                    Дерево #{tree.id} - {tree.species}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="font-medium text-green-800">Заказ #{tree.id}</div>
+                    <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                      {tree.treeCount} {tree.treeCount === 1 ? "дерево" : tree.treeCount < 5 ? "дерева" : "деревьев"}
+                    </span>
                   </div>
-                  <div className="text-sm text-gray-600">{tree.location}</div>
-                  <div className="text-xs text-gray-500">Донор: {tree.donor}</div>
+                  <div className="text-sm text-gray-600 mb-1">{tree.location}</div>
+                  <div className="text-xs text-gray-500 mb-1">Донор: {tree.donor}</div>
+                  <div className="text-xs text-green-600 font-medium">
+                    Награда: {(tree.treeCount * 0.008).toFixed(4)} ETH
+                  </div>
                 </div>
                 <div className="text-right">
-                  <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                  <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                     Доступно
                   </span>
                 </div>
@@ -110,8 +127,32 @@ const AvailableTrees = () => {
         </div>
       )}
 
-      <div className="mt-4 text-sm text-gray-500">
-        Всего деревьев: {trees.length} | Доступно для посадки: {availableTrees.length}
+      <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="text-center">
+            <div className="font-semibold text-gray-800">{totalTreesCount}</div>
+            <div className="text-gray-500">Всего деревьев</div>
+          </div>
+          <div className="text-center">
+            <div className="font-semibold text-green-600">{availableTreesCount}</div>
+            <div className="text-gray-500">Доступно для посадки</div>
+          </div>
+        </div>
+        <div className="mt-2 text-xs text-gray-500 text-center">
+          {availableTrees.length} заказ(ов) • {availableTreesCount} деревьев
+        </div>
+      </div>
+
+      <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
+        <div className="text-sm text-yellow-800">
+          <div className="font-semibold mb-1">💡 Как посадить дерево?</div>
+          <ul className="space-y-1 text-xs">
+            <li>• Выберите заказ из списка выше</li>
+            <li>• Запомните ID заказа</li>
+            <li>• Перейдите на страницу исполнителя</li>
+            <li>• Введите ID и загрузите доказательства посадки</li>
+          </ul>
+        </div>
       </div>
     </div>
   );
