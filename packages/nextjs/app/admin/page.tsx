@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAccount } from "wagmi";
 import { CheckIcon, EyeIcon, ShieldCheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
@@ -9,7 +9,6 @@ const AdminPage = () => {
   const { address: connectedAddress } = useAccount();
   const [selectedTreeId, setSelectedTreeId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [trees, setTrees] = useState<any[]>([]);
 
   // Читаем информацию о дереве
   const { data: treeData, refetch: refetchTree } = useScaffoldReadContract({
@@ -113,7 +112,7 @@ const AdminPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p>
-                      <strong>Вид:</strong> {treeData.species}
+                      <strong>Количество деревьев:</strong> {treeData.treeCount?.toString()}
                     </p>
                     <p>
                       <strong>Местоположение:</strong> {treeData.location}
@@ -210,4 +209,3 @@ const AdminPage = () => {
 };
 
 export default AdminPage;
-
