@@ -16,26 +16,26 @@ type HeaderMenuLink = {
 
 export const menuLinks: HeaderMenuLink[] = [
   {
-    label: "Главная",
+    label: "Home",
     href: "/",
   },
   {
-    label: "Доноры",
+    label: "Donors",
     href: "/donor",
     icon: <HeartIcon className="h-4 w-4" />,
   },
   {
-    label: "Исполнители",
+    label: "Executors",
     href: "/executor",
     icon: <span className="text-lg">🌱</span>,
   },
   {
-    label: "Админ",
+    label: "Admin",
     href: "/admin",
     icon: <ShieldCheckIcon className="h-4 w-4" />,
   },
   {
-    label: "Отладка",
+    label: "Debug",
     href: "/debug",
     icon: <BugAntIcon className="h-4 w-4" />,
   },
@@ -101,7 +101,7 @@ export const Header = () => {
           </div> */}
           <div className="flex flex-col">
             <img alt="SE2 logo" className="cursor-pointer w-10" src="/tree.png" />
-            {/* <span className="text-xs">Экологический блокчейн</span> */}
+            {/* <span className="text-xs">Environmental blockchain</span> */}
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">

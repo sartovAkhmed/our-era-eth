@@ -25,17 +25,17 @@ const Home: NextPage = () => {
           <div className="flex gap-4">
             <div className="text-start">
               <h1 className="text-4xl md:text-5xl font-bold text-emerald-900 mb-4">
-                Добро пожаловать в <span className="text-emerald-600">TreeChain</span>
+                Welcome to <span className="text-emerald-600">TreeChain</span>
               </h1>
               <p className="text-lg text-emerald-800 max-w-2xl mx-auto mb-8">
-                Платформа, где каждый может финансировать посадку деревьев и получать NFT-подтверждение. Прозрачность
-                всех операций обеспечена блокчейном.
+                A platform where anyone can fund tree planting and receive NFT certificates. All operations are
+                transparent and recorded on the blockchain.
               </p>
             </div>
 
             {connectedAddress && (
               <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 mb-8 inline-block">
-                <p className="text-emerald-700 font-medium mb-2">Подключённый кошелёк:</p>
+                <p className="text-emerald-700 font-medium mb-2">Connected wallet:</p>
                 <Address address={connectedAddress} />
               </div>
             )}
@@ -52,7 +52,7 @@ const Home: NextPage = () => {
                 <p className="text-3xl font-extrabold text-emerald-700 leading-tight">
                   {platformStats?.[0]?.toString() || "0"}
                 </p>
-                <p className="text-sm text-emerald-600 mt-1 font-medium tracking-wide">Деревьев посажено</p>
+                <p className="text-sm text-emerald-600 mt-1 font-medium tracking-wide">Trees planted</p>
               </div>
 
               {/* Donated Amount */}
@@ -63,7 +63,7 @@ const Home: NextPage = () => {
                 <p className="text-3xl font-extrabold text-blue-700 leading-tight">
                   {(Number(platformStats?.[1]) / 1e18).toFixed(2)} ETH
                 </p>
-                <p className="text-sm text-blue-600 mt-1 font-medium tracking-wide">Пожертвовано</p>
+                <p className="text-sm text-blue-600 mt-1 font-medium tracking-wide">Donated</p>
               </div>
 
               {/* Rewards Paid */}
@@ -74,7 +74,7 @@ const Home: NextPage = () => {
                 <p className="text-3xl font-extrabold text-purple-700 leading-tight">
                   {(Number(platformStats?.[2]) / 1e18).toFixed(2)} ETH
                 </p>
-                <p className="text-sm text-purple-600 mt-1 font-medium tracking-wide">Наград выплачено</p>
+                <p className="text-sm text-purple-600 mt-1 font-medium tracking-wide">Rewards paid</p>
               </div>
             </div>
           )}
@@ -94,9 +94,9 @@ const Home: NextPage = () => {
                     <Heart className="w-10 h-10 text-white" />
                   </div>
 
-                  <h3 className="text-3xl font-bold text-rose-900 mb-4">Для Доноров</h3>
+                  <h3 className="text-3xl font-bold text-rose-900 mb-4">For Donors</h3>
                   <p className="text-rose-800 text-lg mb-8 leading-relaxed">
-                    Покупайте NFT-сертификаты деревьев и поддерживайте экологические проекты
+                    Buy NFT tree certificates and support environmental projects
                   </p>
 
                   <Link
@@ -104,7 +104,7 @@ const Home: NextPage = () => {
                     className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-rose-500 to-red-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:from-rose-600 hover:to-red-600 transition-all duration-300 transform hover:-translate-y-1"
                   >
                     <Heart className="w-5 h-5" />
-                    Стать донором
+                    Become a donor
                   </Link>
                 </div>
               </div>
@@ -119,9 +119,9 @@ const Home: NextPage = () => {
                     <Sprout className="w-10 h-10 text-white" />
                   </div>
 
-                  <h3 className="text-3xl font-bold text-green-900 mb-4">Для Исполнителей</h3>
+                  <h3 className="text-3xl font-bold text-green-900 mb-4">For Executors</h3>
                   <p className="text-green-800 text-lg mb-8 leading-relaxed">
-                    Сажайте деревья, получайте награды в токенах и помогайте планете
+                    Plant trees, earn token rewards, and help the planet
                   </p>
 
                   <Link
@@ -129,7 +129,7 @@ const Home: NextPage = () => {
                     className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 transform hover:-translate-y-1"
                   >
                     <Sprout className="w-5 h-5" />
-                    Стать исполнителем
+                    Become an executor
                   </Link>
                 </div>
               </div>
@@ -147,9 +147,9 @@ const Home: NextPage = () => {
                     <Bug className="w-10 h-10 text-white" />
                   </div>
 
-                  <h3 className="text-3xl font-bold text-amber-900 mb-4">Отладка</h3>
+                  <h3 className="text-3xl font-bold text-amber-900 mb-4">Debug</h3>
                   <p className="text-amber-800 text-lg mb-8 leading-relaxed">
-                    Взаимодействуйте со смарт-контрактами через интерфейс отладки
+                    Interact with smart contracts through the debug interface
                   </p>
 
                   <Link
@@ -157,7 +157,7 @@ const Home: NextPage = () => {
                     className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-300 transform hover:-translate-y-1"
                   >
                     <Bug className="w-5 h-5" />
-                    Открыть отладку
+                    Open debug
                   </Link>
                 </div>
               </div>

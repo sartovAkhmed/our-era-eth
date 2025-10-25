@@ -7,18 +7,18 @@ import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaf
 
 type DonorType = "individual" | "enterprise";
 
-// Список доступных мест для посадки
+// List of available planting locations
 const PLANTING_LOCATIONS = [
-  { id: 1, name: "Москва, парк Сокольники" },
-  { id: 2, name: "Москва, ВДНХ" },
-  { id: 3, name: "Москва, Лосиный Остров" },
-  { id: 4, name: "Санкт-Петербург, Летний сад" },
-  { id: 5, name: "Санкт-Петербург, Таврический сад" },
-  { id: 6, name: "Казань, парк Горького" },
-  { id: 7, name: "Сочи, дендрарий" },
-  { id: 8, name: "Екатеринбург, Харитоновский парк" },
-  { id: 9, name: "Новосибирск, Ботанический сад" },
-  { id: 10, name: "Краснодар, Солнечный остров" },
+  { id: 1, name: "Moscow, Sokolniki Park" },
+  { id: 2, name: "Moscow, VDNH" },
+  { id: 3, name: "Moscow, Losiny Ostrov" },
+  { id: 4, name: "Saint Petersburg, Summer Garden" },
+  { id: 5, name: "Saint Petersburg, Tauride Garden" },
+  { id: 6, name: "Kazan, Gorky Park" },
+  { id: 7, name: "Sochi, Dendrarium" },
+  { id: 8, name: "Yekaterinburg, Kharitonovsky Park" },
+  { id: 9, name: "Novosibirsk, Botanical Garden" },
+  { id: 10, name: "Krasnodar, Sunny Island" },
 ];
 
 const DonorPage = () => {
@@ -31,14 +31,14 @@ const DonorPage = () => {
   const [enterpriseName, setEnterpriseName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Читаем статистику пользователя
+  // Read user stats
   const { data: userStats } = useScaffoldReadContract({
     contractName: "TreeChain",
     functionName: "getUserStats",
     args: [connectedAddress],
   });
 
-  // Читаем статистику предприятия (если есть)
+  // Read enterprise stats (if any)
   const { data: enterpriseStats } = useScaffoldReadContract({
     contractName: "TreeChain",
     functionName: "getEnterpriseStats",
@@ -48,18 +48,18 @@ const DonorPage = () => {
     },
   });
 
-  // Читаем цену дерева
+  // Read tree price
   const { data: treePrice } = useScaffoldReadContract({
     contractName: "TreeChain",
     functionName: "TREE_PRICE",
   });
 
-  // Хук для покупки дерева индивидуальным донором
+  // Hook for purchasing a tree as an individual donor
   const { writeContractAsync: purchaseTreeAsync } = useScaffoldWriteContract({
     contractName: "TreeChain",
   });
 
-  // Хук для покупки дерева предприятием
+  // Hook for purchasing a tree as an enterprise
   const { writeContractAsync: purchaseTreeAsEnterpriseAsync } = useScaffoldWriteContract({
     contractName: "TreeChain",
   });
@@ -96,22 +96,22 @@ const DonorPage = () => {
 
   const handlePurchaseTree = async () => {
     if (!location) {
-      alert("Пожалуйста, выберите местоположение для посадки");
+      alert("Please select a planting location");
       return;
     }
 
     if (treeCount < 1) {
-      alert("Количество деревьев должно быть не менее 1");
+      alert("The number of trees must be at least 1");
       return;
     }
 
     if (donorType === "enterprise" && !enterpriseName.trim()) {
-      alert("Пожалуйста, укажите название предприятия");
+      alert("Please provide an enterprise name");
       return;
     }
 
     if (!treePrice) {
-      alert("Не удалось получить цену дерева");
+      alert("Failed to fetch the tree price");
       return;
     }
 
@@ -125,7 +125,7 @@ const DonorPage = () => {
           args: [treeCount, location],
           value: totalPrice,
         });
-        alert(`Успешно куплено ${treeCount} деревьев! Вы получили NFT сертификат.`);
+        alert(`Successfully purchased ${treeCount} trees! You received an NFT certificate.`);
       } else {
         await purchaseTreeAsEnterpriseAsync({
           functionName: "purchaseTreeAsEnterprise",
@@ -133,7 +133,7 @@ const DonorPage = () => {
           value: totalPrice,
         });
         alert(
-          `Успешно куплено ${treeCount} деревьев от имени предприятия "${enterpriseName}"! Вы получили NFT сертификат.`,
+          `Successfully purchased ${treeCount} trees on behalf of the enterprise "${enterpriseName}"! You received an NFT certificate.`,
         );
       }
 
@@ -143,8 +143,8 @@ const DonorPage = () => {
       setSearchLocation("");
       setEnterpriseName("");
     } catch (error) {
-      console.error("Ошибка при покупке дерева:", error);
-      alert("Ошибка при покупке дерева. Проверьте консоль для подробностей.");
+      console.error("Error purchasing tree:", error);
+      alert("Error purchasing tree. Check the console for details.");
     } finally {
       setIsLoading(false);
     }
@@ -162,8 +162,8 @@ const DonorPage = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Подключите кошелек</h1>
-          <p className="text-gray-600">Для покупки деревьев необходимо подключить кошелек</p>
+          <h1 className="text-2xl font-bold mb-4">Connect your wallet</h1>
+          <p className="text-gray-600">To purchase trees you need to connect your wallet</p>
         </div>
       </div>
     );
@@ -173,14 +173,16 @@ const DonorPage = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <HeartIcon className="h-16 w-16 mx-auto mb-4 text-red-500" />
-          <h1 className="text-4xl font-bold text-green-600 mb-4">🌳 Покупка деревьев</h1>
-          <p className="text-lg text-gray-600">Поддержите экологические проекты, купив NFT сертификаты деревьев</p>
+          <div className="flex items-center justify-center gap-6">
+            <img className="w-32" src="/tree.png" alt="logo" />
+            <h1 className="text-4xl font-bold text-green-600 mb-4">Tree purchase</h1>
+          </div>
+          <p className="text-lg text-gray-600">Support environmental projects by purchasing NFT tree certificates</p>
         </div>
 
-        {/* Выбор типа донора */}
+        {/* Donor type selection */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4 text-center">Тип донора</h2>
+          <h2 className="text-xl font-bold mb-4 text-center">Donor type</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
               onClick={() => setDonorType("individual")}
@@ -190,9 +192,9 @@ const DonorPage = () => {
             >
               <div className="flex items-center justify-center mb-2">
                 <UserIcon className="h-8 w-8 mr-2" />
-                <span className="text-lg font-semibold">Индивидуально</span>
+                <span className="text-lg font-semibold">Individual</span>
               </div>
-              <p className="text-sm text-gray-600">Покупка от физического лица</p>
+              <p className="text-sm text-gray-600">Purchase as an individual</p>
             </button>
 
             <button
@@ -203,14 +205,14 @@ const DonorPage = () => {
             >
               <div className="flex items-center justify-center mb-2">
                 <BuildingOfficeIcon className="h-8 w-8 mr-2" />
-                <span className="text-lg font-semibold">Предприятие</span>
+                <span className="text-lg font-semibold">Enterprise</span>
               </div>
-              <p className="text-sm text-gray-600">Покупка от компании или организации</p>
+              <p className="text-sm text-gray-600">Purchase as a company or organization</p>
             </button>
           </div>
         </div>
 
-        {/* Статистика */}
+        {/* Statistics */}
         {(userStats || enterpriseStats) && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div
@@ -219,7 +221,7 @@ const DonorPage = () => {
               <div className="text-4xl mb-2">🌳</div>
               <p className="text-2xl font-bold text-green-600">{treesDonated}</p>
               <p className="text-sm text-gray-600">
-                {donorType === "individual" ? "Деревьев пожертвовано" : "Деревьев пожертвовано предприятием"}
+                {donorType === "individual" ? "Trees donated" : "Trees donated by enterprise"}
               </p>
             </div>
             <div
@@ -228,38 +230,38 @@ const DonorPage = () => {
               <CurrencyDollarIcon className="h-8 w-8 mx-auto mb-2 text-green-600" />
               <p className="text-2xl font-bold text-green-600">{totalSpent} ETH</p>
               <p className="text-sm text-gray-600">
-                {donorType === "individual" ? "Потрачено на деревья" : "Потрачено предприятием на деревья"}
+                {donorType === "individual" ? "Spent on trees" : "Enterprise spent on trees"}
               </p>
             </div>
           </div>
         )}
 
-        {/* Форма покупки */}
+        {/* Purchase form */}
         <div className="bg-white rounded-lg shadow-lg p-8">
           <h2 className="text-2xl font-bold mb-6 text-center">
-            {donorType === "individual" ? "Купить деревья" : "Купить деревья от предприятия"}
+            {donorType === "individual" ? "Purchase trees" : "Purchase trees as enterprise"}
           </h2>
 
           <div className="space-y-6">
             {donorType === "enterprise" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Название предприятия *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Enterprise name *</label>
                 <input
                   type="text"
                   value={enterpriseName}
                   onChange={e => setEnterpriseName(e.target.value)}
-                  placeholder="Например: ООО 'ЭкоСтрой', ЗАО 'Зеленый мир'..."
+                  placeholder="For example: EcoBuild LLC, GreenWorld Inc..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  Это название будет указано в NFT сертификате и публичной статистике
+                  This name will be included in the NFT certificate and public statistics
                 </p>
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Количество деревьев *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Number of trees *</label>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => incrementTreeCount(-1)}
@@ -305,17 +307,17 @@ const DonorPage = () => {
                   onClick={() => setTreeCount(1)}
                   className="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
                 >
-                  Сброс
+                  Reset
                 </button>
               </div>
 
               <p className="text-sm text-gray-500 mt-2">
-                Выберите количество деревьев для посадки. Можно ввести число вручную или использовать кнопки
+                Choose the number of trees to plant. You can type a number manually or use the buttons
               </p>
             </div>
 
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Местоположение для посадки *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Planting location *</label>
               <div className="relative">
                 <MapPinIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                 <input
@@ -329,7 +331,7 @@ const DonorPage = () => {
                     }
                   }}
                   onFocus={() => setShowLocationDropdown(true)}
-                  placeholder="Начните вводить название места..."
+                  placeholder="Start typing the location name..."
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   required
                 />
@@ -351,34 +353,32 @@ const DonorPage = () => {
 
               {showLocationDropdown && searchLocation && filteredLocations.length === 0 && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                  <div className="px-4 py-2 text-gray-500">Местоположение не найдено</div>
+                  <div className="px-4 py-2 text-gray-500">Location not found</div>
                 </div>
               )}
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold mb-2">Стоимость:</h3>
+              <h3 className="font-semibold mb-2">Cost:</h3>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span>Цена за 1 дерево:</span>
+                  <span>Price per tree:</span>
                   <span className="font-semibold">
-                    {treePrice ? `${(Number(treePrice) / 1e18).toFixed(4)} ETH` : "Загрузка..."}
+                    {treePrice ? `${(Number(treePrice) / 1e18).toFixed(4)} ETH` : "Loading..."}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Количество:</span>
-                  <span className="font-semibold">{treeCount} шт.</span>
+                  <span>Quantity:</span>
+                  <span className="font-semibold">{treeCount}</span>
                 </div>
                 <div className="border-t pt-2 flex justify-between text-lg font-bold text-green-600">
-                  <span>Итого:</span>
+                  <span>Total:</span>
                   <span>{totalCost.toFixed(4)} ETH</span>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 mt-2">Включает: посадку деревьев, NFT сертификаты, верификацию</p>
+              <p className="text-sm text-gray-600 mt-2">Includes: tree planting, NFT certificates, verification</p>
               {donorType === "enterprise" && (
-                <p className="text-sm text-blue-600 mt-1">
-                  ✅ NFT сертификаты будут содержать название вашего предприятия
-                </p>
+                <p className="text-sm text-blue-600 mt-1">✅ NFT certificates will include your enterprise name</p>
               )}
             </div>
 
@@ -390,43 +390,43 @@ const DonorPage = () => {
               } disabled:bg-gray-400 disabled:cursor-not-allowed`}
             >
               {isLoading
-                ? "Покупка..."
+                ? "Purchasing..."
                 : donorType === "individual"
-                  ? `Купить ${treeCount} ${treeCount === 1 ? "дерево" : treeCount < 5 ? "дерева" : "деревьев"}`
-                  : `Купить ${treeCount} ${treeCount === 1 ? "дерево" : treeCount < 5 ? "дерева" : "деревьев"} от "${enterpriseName || "предприятия"}"`}
+                  ? `Buy ${treeCount} ${treeCount === 1 ? "tree" : "trees"}`
+                  : `Buy ${treeCount} ${treeCount === 1 ? "tree" : "trees"} on behalf of "${enterpriseName || "enterprise"}`}
             </button>
           </div>
         </div>
 
-        {/* Информация о процессе */}
+        {/* How it works */}
         <div className="mt-8 bg-blue-50 p-6 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">Как это работает:</h3>
+          <h3 className="text-lg font-semibold mb-4">How it works:</h3>
           <div className="space-y-3">
             <div className="flex items-start">
               <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">
                 1
               </span>
-              <p>Вы покупаете NFT сертификаты деревьев по 0.01 ETH за штуку</p>
+              <p>You purchase NFT tree certificates for 0.01 ETH each</p>
             </div>
             <div className="flex items-start">
               <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">
                 2
               </span>
-              <p>Исполнитель сажает деревья и отправляет доказательства</p>
+              <p>The executor plants the trees and submits proof</p>
             </div>
             <div className="flex items-start">
               <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">
                 3
               </span>
-              <p>Мы верифицируем посадку и записываем в блокчейн</p>
+              <p>We verify the planting and record it on the blockchain</p>
             </div>
             <div className="flex items-start">
               <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5">
                 4
               </span>
               <p>
-                Вы получаете NFT сертификаты с геопривязкой
-                {donorType === "enterprise" && " и названием вашего предприятия"}
+                You receive NFT certificates with geolocation
+                {donorType === "enterprise" && " and your enterprise name"}
               </p>
             </div>
           </div>

@@ -15,32 +15,32 @@ const ExecutorPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTree, setSelectedTree] = useState<any>(null);
 
-  // Читаем статистику пользователя
+  // Read user stats
   const { data: userStats, refetch: refetchUserStats } = useScaffoldReadContract({
     contractName: "TreeChain",
     functionName: "getUserStats",
     args: [connectedAddress],
   });
 
-  // Хук для посадки дерева
+  // Hook for planting a tree
   const { writeContractAsync: plantTreeAsync } = useScaffoldWriteContract({
     contractName: "TreeChain",
   });
 
-  // Функция для получения информации о конкретном дереве
+  // Function to fetch information about a specific tree
   const { data: treeData, refetch: refetchTree } = useScaffoldReadContract({
     contractName: "TreeChain",
     functionName: "getTree",
     args: treeId ? [BigInt(treeId)] : undefined,
   });
 
-  // Функция для загрузки файла в IPFS (симуляция)
+  // Function to upload a file to IPFS (simulation)
   const uploadToIPFS = async (file: File): Promise<string> => {
     const randomHash = "Qm" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     return randomHash;
   };
 
-  // Обработчик выбора файла изображения
+  // Image file upload handler
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -48,16 +48,16 @@ const ExecutorPage = () => {
       try {
         const hash = await uploadToIPFS(file);
         setImageHash(hash);
-        alert(`Фотография загружена! IPFS хеш: ${hash}`);
+        alert(`Photo uploaded! IPFS hash: ${hash}`);
       } catch (error) {
-        alert("Ошибка при загрузке фотографии");
+        alert("Error uploading photo");
       } finally {
         setIsLoading(false);
       }
     }
   };
 
-  // Обработчик выбора файла документов
+  // Document file upload handler
   const handleDocumentUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -65,9 +65,9 @@ const ExecutorPage = () => {
       try {
         const hash = await uploadToIPFS(file);
         setDocumentHash(hash);
-        alert(`Документы загружены! IPFS хеш: ${hash}`);
+        alert(`Documents uploaded! IPFS hash: ${hash}`);
       } catch (error) {
-        alert("Ошибка при загрузке документов");
+        alert("Error uploading documents");
       } finally {
         setIsLoading(false);
       }
@@ -79,7 +79,7 @@ const ExecutorPage = () => {
     setTreeId(value);
     setSelectedTree(null);
     if (value) {
-      // Если введен ID, пытаемся загрузить данные о дереве
+      // If an ID is entered, try to fetch the tree data
       refetchTree();
     }
   };
@@ -101,17 +101,17 @@ const ExecutorPage = () => {
 
   const handlePlantTree = async () => {
     if (!treeId || !imageHash || !documentHash) {
-      alert("Пожалуйста, заполните все поля");
+      alert("Please fill in all fields");
       return;
     }
 
     if (selectedTree?.executor && selectedTree.executor !== "0x0000000000000000000000000000000000000000") {
-      alert("Это дерево уже посажено другим исполнителем");
+      alert("This tree has already been planted by another executor");
       return;
     }
 
     if (selectedTree?.isVerified) {
-      alert("Это дерево уже верифицировано");
+      alert("This tree has already been verified");
       return;
     }
 
@@ -122,7 +122,7 @@ const ExecutorPage = () => {
         args: [BigInt(treeId), imageHash, documentHash],
       });
 
-      alert("Отчет о посадке отправлен! Ожидайте верификации.");
+      alert("Planting report submitted! Please wait for verification.");
       setTreeId("");
       setImageHash("");
       setDocumentHash("");
@@ -130,7 +130,7 @@ const ExecutorPage = () => {
       refetchUserStats();
     } catch (error) {
       console.error("Ошибка при отправке отчета:", error);
-      alert("Ошибка при отправке отчета. Проверьте консоль для подробностей.");
+      alert("Error submitting the report. Check the console for details.");
     } finally {
       setIsLoading(false);
     }
@@ -140,8 +140,8 @@ const ExecutorPage = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Подключите кошелек</h1>
-          <p className="text-gray-600">Для работы исполнителем необходимо подключить кошелек</p>
+          <h1 className="text-2xl font-bold mb-4">Connect your wallet</h1>
+          <p className="text-gray-600">To work as an executor you need to connect your wallet</p>
         </div>
       </div>
     );
@@ -152,8 +152,8 @@ const ExecutorPage = () => {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <div className="text-6xl mb-4">🌱</div>
-          <h1 className="text-4xl font-bold text-green-600 mb-4">Исполнитель</h1>
-          <p className="text-lg text-gray-600">Сажайте деревья и получайте награды в ETH</p>
+          <h1 className="text-4xl font-bold text-green-600 mb-4">Executor</h1>
+          <p className="text-lg text-gray-600">Plant trees and earn rewards in ETH</p>
         </div>
 
         {/* Статистика пользователя */}
@@ -161,30 +161,30 @@ const ExecutorPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="bg-green-100 p-6 rounded-lg text-center">
               <p className="text-6xl font-bold text-green-600">{userStats[1]?.toString() || "0"}</p>
-              <p className=" text-gray-600 text-2xl font-bold">Деревьев посажено</p>
+              <p className=" text-gray-600 text-2xl font-bold">Trees planted</p>
             </div>
             <div className="bg-blue-100 p-6 rounded-lg text-center">
               <p className="text-6xl font-bold text-blue-600">{((Number(userStats[1]) || 0) * 0.008).toFixed(4)} ETH</p>
-              <p className="text-2xl font-bold text-gray-600">Заработано награды</p>
+              <p className="text-2xl font-bold text-gray-600">Rewards earned</p>
             </div>
           </div>
         )}
 
         {/* Форма посадки */}
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold mb-6 text-center">Отправить отчет о посадке</h2>
+          <h2 className="text-2xl font-bold mb-6 text-center">Submit planting report</h2>
 
           <div className="space-y-6">
             {/* Выбор дерева */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">ID дерева для посадки *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Tree ID for planting *</label>
               <div className="space-y-2">
                 <div className="flex gap-2">
                   <input
                     type="number"
                     value={treeId}
                     onChange={e => handleTreeIdChange(e.target.value)}
-                    placeholder="Введите ID дерева, полученный от донора"
+                    placeholder="Enter tree ID provided by the donor"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                   <button
@@ -194,17 +194,17 @@ const ExecutorPage = () => {
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     <RefreshCwIcon className="h-4 w-4" />
-                    Проверить
+                    Check
                   </button>
                 </div>
                 <p className="text-sm text-gray-500">
-                  ID дерева должен быть предоставлен донором, который купил дерево
+                  The tree ID must be provided by the donor who purchased the tree
                 </p>
 
                 {selectedTree && (
                   <div className="p-3 bg-green-50 rounded-md">
                     <div className="font-medium text-green-800">
-                      Информация о дереве #{selectedTree.id} - {selectedTree.treeCount} деревьев
+                      Tree information #{selectedTree.id} - {selectedTree.treeCount} trees
                     </div>
                     <div className="text-sm text-green-600">{selectedTree.location}</div>
                     <div className="text-xs text-green-500">
@@ -213,11 +213,11 @@ const ExecutorPage = () => {
                     {selectedTree.executor &&
                       selectedTree.executor !== "0x0000000000000000000000000000000000000000" && (
                         <div className="text-xs text-red-500 mt-1">
-                          ⚠️ Уже посажено исполнителем: {selectedTree.executor}
+                          ⚠️ Already planted by executor: {selectedTree.executor}
                         </div>
                       )}
                     {selectedTree.isVerified && (
-                      <div className="text-xs text-red-500 mt-1">⚠️ Дерево уже верифицировано</div>
+                      <div className="text-xs text-red-500 mt-1">⚠️ This tree is already verified</div>
                     )}
                   </div>
                 )}
@@ -226,7 +226,7 @@ const ExecutorPage = () => {
 
             {/* Загрузка фотографии */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Фотография посадки *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Planting photo *</label>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <CameraIcon className="h-5 w-5 text-gray-400" />
@@ -239,7 +239,7 @@ const ExecutorPage = () => {
                 </div>
                 {imageHash && (
                   <div className="p-2 bg-green-50 rounded text-sm">
-                    <span className="font-medium">IPFS хеш:</span> {imageHash}
+                    <span className="font-medium">IPFS hash:</span> {imageHash}
                   </div>
                 )}
               </div>
@@ -248,7 +248,7 @@ const ExecutorPage = () => {
             {/* Загрузка документов */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Документы (координаты, сертификат) *
+                Documents (coordinates, certificate) *
               </label>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
@@ -262,20 +262,20 @@ const ExecutorPage = () => {
                 </div>
                 {documentHash && (
                   <div className="p-2 bg-green-50 rounded text-sm">
-                    <span className="font-medium">IPFS хеш:</span> {documentHash}
+                    <span className="font-medium">IPFS hash:</span> {documentHash}
                   </div>
                 )}
               </div>
             </div>
 
             <div className="bg-yellow-50 p-4 rounded-lg">
-              <h3 className="font-semibold mb-2">Награда за посадку:</h3>
+              <h3 className="font-semibold mb-2">Reward for planting:</h3>
               <p className="text-lg font-bold text-green-600">
                 {selectedTree ? (Number(selectedTree.treeCount) * 0.008).toFixed(4) : "0.008"} ETH
               </p>
               <p className="text-sm text-gray-600 mt-1">
-                {selectedTree ? `За ${selectedTree.treeCount} деревьев` : "За одно дерево"}. Награда будет выплачена
-                после верификации посадки
+                {selectedTree ? `For ${selectedTree.treeCount} trees` : "For one tree"}. Reward will be paid after
+                verification of the planting
               </p>
             </div>
 
@@ -291,44 +291,44 @@ const ExecutorPage = () => {
               }
               className="w-full bg-green-600 text-white py-3 px-6 rounded-md font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
-              {isLoading ? "Отправка..." : "Отправить отчет"}
+              {isLoading ? "Submitting..." : "Submit report"}
             </button>
           </div>
         </div>
 
-        {/* Инструкции */}
+        {/* Instructions */}
         <div className="mt-8 bg-green-50 p-6 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4">Как получить данные для полей:</h3>
+          <h3 className="text-lg font-semibold mb-4">How to get data for the fields:</h3>
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-lg">
-              <h4 className="font-semibold text-green-800 mb-2">🌳 ID дерева</h4>
-              <p className="text-sm text-gray-700 mb-2">Способы получения ID дерева:</p>
+              <h4 className="font-semibold text-green-800 mb-2">🌳 Tree ID</h4>
+              <p className="text-sm text-gray-700 mb-2">Ways to get the tree ID:</p>
               <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                <li>• Получите ID от донора, который купил дерево</li>
-                <li>• Обратитесь к администратору платформы</li>
-                <li>• Проверьте корректность ID с помощью кнопки "Проверить"</li>
+                <li>• Get the ID from the donor who purchased the tree</li>
+                <li>• Contact the platform administrator</li>
+                <li>• Verify the ID using the "Check" button</li>
               </ul>
             </div>
 
             <div className="bg-white p-4 rounded-lg">
-              <h4 className="font-semibold text-green-800 mb-2">📷 IPFS хеш фотографии</h4>
-              <p className="text-sm text-gray-700 mb-2">Загрузите фотографию посадки:</p>
+              <h4 className="font-semibold text-green-800 mb-2">📷 IPFS hash for photo</h4>
+              <p className="text-sm text-gray-700 mb-2">Upload the planting photo:</p>
               <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                <li>• Сделайте фото посаженного дерева</li>
-                <li>• Используйте поле "Фотография посадки" для загрузки</li>
-                <li>• Система автоматически загрузит файл в IPFS</li>
-                <li>• Вы получите IPFS хеш для записи в блокчейн</li>
+                <li>• Take a photo of the planted tree</li>
+                <li>• Use the "Planting photo" field to upload</li>
+                <li>• The system will automatically upload the file to IPFS</li>
+                <li>• You will receive an IPFS hash to record on the blockchain</li>
               </ul>
             </div>
 
             <div className="bg-white p-4 rounded-lg">
-              <h4 className="font-semibold text-green-800 mb-2">📄 IPFS хеш документов</h4>
-              <p className="text-sm text-gray-700 mb-2">Загрузите документы с координатами:</p>
+              <h4 className="font-semibold text-green-800 mb-2">📄 IPFS hash for documents</h4>
+              <p className="text-sm text-gray-700 mb-2">Upload documents with coordinates:</p>
               <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                <li>• Создайте документ с GPS координатами посадки</li>
-                <li>• Добавьте сертификат или другие подтверждающие документы</li>
-                <li>• Используйте поле "Документы" для загрузки</li>
-                <li>• Система автоматически загрузит файл в IPFS</li>
+                <li>• Create a document with GPS coordinates of the planting site</li>
+                <li>• Add a certificate or other supporting documents</li>
+                <li>• Use the "Documents" field to upload</li>
+                <li>• The system will automatically upload the file to IPFS</li>
               </ul>
             </div>
           </div>

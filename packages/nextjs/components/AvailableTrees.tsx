@@ -18,13 +18,13 @@ const AvailableTrees = () => {
   const [trees, setTrees] = useState<Tree[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Читаем статистику платформы для получения общего количества деревьев
+  // Read platform stats to get the total number of trees
   const { data: platformStats } = useScaffoldReadContract({
     contractName: "TreeChain",
     functionName: "getPlatformStats",
   });
 
-  // Загружаем доступные деревья
+  // Load available trees
   useEffect(() => {
     const loadTrees = async () => {
       if (!platformStats) return;
@@ -58,7 +58,7 @@ const AvailableTrees = () => {
           };
           availableTrees.push(mockTree);
         } catch (error) {
-          console.error(`Ошибка загрузки дерева ${i}:`, error);
+          console.error(`Error loading tree ${i}:`, error);
         }
       }
 
@@ -90,13 +90,13 @@ const AvailableTrees = () => {
 
   return (
     <div className="bg-white rounded-3xl shadow-lg p-6">
-      <h3 className="text-lg font-semibold mb-4">🌳 Доступные деревья для посадки</h3>
+      <h3 className="text-lg font-semibold mb-4">🌳 Available trees to plant</h3>
 
       {availableTrees.length === 0 ? (
         <div className="text-center py-8">
           <div className="text-4xl mb-2">🌱</div>
-          <p className="text-gray-600">Нет доступных деревьев для посадки</p>
-          <p className="text-sm text-gray-500 mt-1">Деревья появятся здесь после покупки донорами</p>
+          <p className="text-gray-600">No available trees to plant</p>
+          <p className="text-sm text-gray-500 mt-1">Trees will appear here after donors purchase them</p>
         </div>
       ) : (
         <div className="space-y-3 max-h-64 overflow-y-auto">
@@ -105,20 +105,20 @@ const AvailableTrees = () => {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <div className="font-medium text-green-800">Заказ #{tree.id}</div>
+                    <div className="font-medium text-green-800">Order #{tree.id}</div>
                     <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                      {tree.treeCount} {tree.treeCount === 1 ? "дерево" : tree.treeCount < 5 ? "дерева" : "деревьев"}
+                      {tree.treeCount} {tree.treeCount === 1 ? "tree" : "trees"}
                     </span>
                   </div>
                   <div className="text-sm text-gray-600 mb-1">{tree.location}</div>
                   <div className="text-xs text-gray-500 mb-1">Донор: {tree.donor}</div>
                   <div className="text-xs text-green-600 font-medium">
-                    Награда: {(tree.treeCount * 0.008).toFixed(4)} ETH
+                    Reward: {(tree.treeCount * 0.008).toFixed(4)} ETH
                   </div>
                 </div>
                 <div className="text-right">
                   <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                    Доступно
+                    Available
                   </span>
                 </div>
               </div>
@@ -131,26 +131,26 @@ const AvailableTrees = () => {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="text-center">
             <div className="font-semibold text-gray-800">{totalTreesCount}</div>
-            <div className="text-gray-500">Всего деревьев</div>
+            <div className="text-gray-500">Total trees</div>
           </div>
           <div className="text-center">
             <div className="font-semibold text-green-600">{availableTreesCount}</div>
-            <div className="text-gray-500">Доступно для посадки</div>
+            <div className="text-gray-500">Available to plant</div>
           </div>
         </div>
         <div className="mt-2 text-xs text-gray-500 text-center">
-          {availableTrees.length} заказ(ов) • {availableTreesCount} деревьев
+          {availableTrees.length} order(s) • {availableTreesCount} trees
         </div>
       </div>
 
       <div className="mt-4 p-3 bg-yellow-50 rounded-lg">
         <div className="text-sm text-yellow-800">
-          <div className="font-semibold mb-1">💡 Как посадить дерево?</div>
+          <div className="font-semibold mb-1">💡 How to plant a tree?</div>
           <ul className="space-y-1 text-xs">
-            <li>• Выберите заказ из списка выше</li>
-            <li>• Запомните ID заказа</li>
-            <li>• Перейдите на страницу исполнителя</li>
-            <li>• Введите ID и загрузите доказательства посадки</li>
+            <li>• Select an order from the list above</li>
+            <li>• Note the order ID</li>
+            <li>• Go to the executor page</li>
+            <li>• Enter the ID and upload proof of planting</li>
           </ul>
         </div>
       </div>
