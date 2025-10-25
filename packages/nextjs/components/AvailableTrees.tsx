@@ -78,7 +78,7 @@ const AvailableTrees = () => {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="bg-white rounded-3xl shadow-lg p-6">
       <h3 className="text-lg font-semibold mb-4">🌳 Доступные деревья для посадки</h3>
 
       {availableTrees.length === 0 ? (

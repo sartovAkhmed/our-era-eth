@@ -3041,7 +3041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oclif/core@npm:^4, @oclif/core@npm:^4.5.4":
+"@oclif/core@npm:^4, @oclif/core@npm:^4.7.2":
   version: 4.7.2
   resolution: "@oclif/core@npm:4.7.2"
   dependencies:
@@ -3077,10 +3077,10 @@ __metadata:
   linkType: hard
 
 "@oclif/plugin-plugins@npm:^5":
-  version: 5.4.50
-  resolution: "@oclif/plugin-plugins@npm:5.4.50"
+  version: 5.4.51
+  resolution: "@oclif/plugin-plugins@npm:5.4.51"
   dependencies:
-    "@oclif/core": ^4.5.4
+    "@oclif/core": ^4.7.2
     ansis: ^3.17.0
     debug: ^4.4.0
     npm: ^10.9.4
@@ -3091,7 +3091,7 @@ __metadata:
     validate-npm-package-name: ^5.0.1
     which: ^4.0.0
     yarn: ^1.22.22
-  checksum: 47f571aaee7e687d7ae396996241557a154830f7b3328d03e117f69a85d3598dab0db1d910eeab97165fba9aa6967498bba39dd69c84137cdbca9f0612c00aef
+  checksum: db6e19f8b87e0e090de12f8976a4d1731746501382eeaaed294799caa225a7ba80ac6969de81402b2114039a6b7c4094483fddba02562764ca3a73ff3037716a
   languageName: node
   linkType: hard
 
@@ -3567,6 +3567,7 @@ __metadata:
     eslint-config-prettier: ~10.1.1
     eslint-plugin-prettier: ~5.2.4
     kubo-rpc-client: ~5.0.2
+    lucide-react: ^0.548.0
     next: ~15.2.3
     next-nprogress-bar: ~2.3.13
     next-themes: ~0.3.0
@@ -12101,6 +12102,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lucide-react@npm:^0.548.0":
+  version: 0.548.0
+  resolution: "lucide-react@npm:0.548.0"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: fc13fd26d0074bbe79ad660a9a5ed16008d7ed824e8cc6a7bc8dc7b6c107be0c276a3358431c75b6015256ec84099b794b97d9f87cfb5cd6f04a364d4d1fd62c
+  languageName: node
+  linkType: hard
+
+"lucide@npm:^0.548.0":
+  version: 0.548.0
+  resolution: "lucide@npm:0.548.0"
+  checksum: 2cb6a291f42b5b5b1bd197a4fcd1fb9547a1c2cd76ce6ba44009e64f93352adda3a61434afc300584486f4a106c11cfffb42f1daa402ca7daa501129dbce5989
+  languageName: node
+  linkType: hard
+
 "main-event@npm:^1.0.1":
   version: 1.0.1
   resolution: "main-event@npm:1.0.1"
@@ -14986,6 +15003,7 @@ __metadata:
   dependencies:
     husky: ~9.1.6
     lint-staged: ~13.2.2
+    lucide: ^0.548.0
   languageName: unknown
   linkType: soft
 
