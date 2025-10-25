@@ -46,7 +46,7 @@ const Home: NextPage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-14">
               {/* Trees Planted */}
               <div className="rounded-3xl p-6 bg-gradient-to-br from-emerald-50/60 to-white/70 backdrop-blur-sm border border-emerald-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-100 mb-3 text-3xl">
+                <div className="flex mx-auto items-center justify-center w-14 h-14 rounded-2xl bg-emerald-100 mb-3 text-3xl">
                   🌳
                 </div>
                 <p className="text-3xl font-extrabold text-emerald-700 leading-tight">
@@ -57,7 +57,7 @@ const Home: NextPage = () => {
 
               {/* Donated Amount */}
               <div className="rounded-3xl p-6 bg-gradient-to-br from-blue-50/60 to-white/70 backdrop-blur-sm border border-blue-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-100 mb-3">
+                <div className="flex mx-auto items-center justify-center w-14 h-14 rounded-2xl bg-blue-100 mb-3">
                   <CurrencyDollarIcon className="h-7 w-7 text-blue-600" />
                 </div>
                 <p className="text-3xl font-extrabold text-blue-700 leading-tight">
@@ -68,7 +68,7 @@ const Home: NextPage = () => {
 
               {/* Rewards Paid */}
               <div className="rounded-3xl p-6 bg-gradient-to-br from-purple-50/60 to-white/70 backdrop-blur-sm border border-purple-200 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-purple-100 mb-3">
+                <div className="flex mx-auto items-center justify-center w-14 h-14 rounded-2xl bg-purple-100 mb-3">
                   <ShieldCheckIcon className="h-7 w-7 text-purple-600" />
                 </div>
                 <p className="text-3xl font-extrabold text-purple-700 leading-tight">

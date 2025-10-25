@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import logo from "../../public/tree.png";
 import { RefreshCwIcon } from "lucide-react";
 import { useAccount } from "wagmi";
 import { CameraIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
@@ -159,13 +160,12 @@ const ExecutorPage = () => {
         {userStats && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="bg-green-100 p-6 rounded-lg text-center">
-              <div className="text-4xl mb-2">🌳</div>
-              <p className="text-2xl font-bold text-green-600">{userStats[1]?.toString() || "0"}</p>
-              <p className="text-sm text-gray-600">Деревьев посажено</p>
+              <p className="text-6xl font-bold text-green-600">{userStats[1]?.toString() || "0"}</p>
+              <p className=" text-gray-600 text-2xl font-bold">Деревьев посажено</p>
             </div>
             <div className="bg-blue-100 p-6 rounded-lg text-center">
-              <p className="text-2xl font-bold text-blue-600">{((Number(userStats[1]) || 0) * 0.008).toFixed(4)} ETH</p>
-              <p className="text-sm text-gray-600">Заработано награды</p>
+              <p className="text-6xl font-bold text-blue-600">{((Number(userStats[1]) || 0) * 0.008).toFixed(4)} ETH</p>
+              <p className="text-2xl font-bold text-gray-600">Заработано награды</p>
             </div>
           </div>
         )}
