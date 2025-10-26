@@ -76,7 +76,7 @@ const AdminPage = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-blue-600 mb-4">🛡️ Admin Panel</h1>
+          <h1 className="text-4xl font-bold text-emerald-600 mb-4">🛡️ Admin Panel</h1>
           <p className="text-lg text-gray-600">Tree planting verification and platform management</p>
         </div>
 
@@ -97,7 +97,7 @@ const AdminPage = () => {
                 />
                 <button
                   onClick={() => refetchTree()}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                  className="bg-emerald-600 text-white px-6 py-2 rounded-md hover:bg-emerald-700 transition-colors"
                 >
                   <EyeIcon className="h-5 w-5" />
                 </button>
@@ -193,7 +193,7 @@ const AdminPage = () => {
           <div className="mt-4">
             <a
               href="/debug"
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+              className="bg-emerald-600 text-white px-6 py-2 rounded-md hover:bg-emerald-700 transition-colors inline-flex items-center gap-2"
             >
               <EyeIcon className="h-5 w-5" />
               Open debug

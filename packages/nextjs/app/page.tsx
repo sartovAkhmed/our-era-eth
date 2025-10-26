@@ -10,7 +10,7 @@ import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
+  // const { address: connectedAddress } = useAccount();
 
   const { data: platformStats } = useScaffoldReadContract({
     contractName: "TreeChain",
@@ -23,7 +23,7 @@ const Home: NextPage = () => {
         {/* Hero Section */}
         <div className="max-w-4xl mx-auto text-center px-4">
           <div className="flex gap-4">
-            <div className="text-start">
+            <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-emerald-900 mb-4">
                 Welcome to <span className="text-emerald-600">TreeChain</span>
               </h1>
@@ -32,13 +32,6 @@ const Home: NextPage = () => {
                 transparent and recorded on the blockchain.
               </p>
             </div>
-
-            {connectedAddress && (
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 mb-8 inline-block">
-                <p className="text-emerald-700 font-medium mb-2">Connected wallet:</p>
-                <Address address={connectedAddress} />
-              </div>
-            )}
           </div>
 
           {/* Статистика */}
@@ -137,30 +130,6 @@ const Home: NextPage = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <AvailableTrees />
-
-              {/* Отладка */}
-              <div className="group relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 border-amber-200 hover:border-amber-300">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-amber-200 rounded-full -mr-20 -mt-20 opacity-20 group-hover:scale-150 transition-transform duration-700"></div>
-
-                <div className="relative">
-                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform duration-300">
-                    <Bug className="w-10 h-10 text-white" />
-                  </div>
-
-                  <h3 className="text-3xl font-bold text-amber-900 mb-4">Debug</h3>
-                  <p className="text-amber-800 text-lg mb-8 leading-relaxed">
-                    Interact with smart contracts through the debug interface
-                  </p>
-
-                  <Link
-                    href="/debug"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-300 transform hover:-translate-y-1"
-                  >
-                    <Bug className="w-5 h-5" />
-                    Open debug
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
         </div>
