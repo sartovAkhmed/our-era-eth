@@ -28,6 +28,7 @@ const config: HardhatUserConfig = {
       {
         version: "0.8.20",
         settings: {
+          evmVersion: 'paris',
           optimizer: {
             enabled: true,
             // https://docs.soliditylang.org/en/latest/using-the-compiler.html#optimizer-options
@@ -125,10 +126,31 @@ const config: HardhatUserConfig = {
       url: "https://forno.celo-sepolia.celo-testnet.org/",
       accounts: [deployerPrivateKey],
     },
+    statusSepolia: {
+      chainId: 1660990954,
+      gas: 0,
+      gasPrice: 0,
+      url: 'https://public.sepolia.rpc.status.network',
+      accounts: [
+        deployerPrivateKey
+      ]
+    }
   },
   // Configuration for harhdat-verify plugin
   etherscan: {
-    apiKey: etherscanApiKey,
+    apiKey: {
+      statusSepolia: 'abc'
+    },
+    customChains: [
+      {
+        network: 'statusSepolia',
+        chainId: 1660990954,
+        urls: {
+          apiURL: 'https://sepoliascan.status.network/api',
+          browserURL: 'https://sepoliascan.status.network'
+        }
+      }
+    ]
   },
   // Configuration for etherscan-verify from hardhat-deploy plugin
   verify: {

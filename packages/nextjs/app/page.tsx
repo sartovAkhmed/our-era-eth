@@ -54,7 +54,7 @@ const Home: NextPage = () => {
                   <CurrencyDollarIcon className="h-7 w-7 text-blue-600" />
                 </div>
                 <p className="text-3xl font-extrabold text-blue-700 leading-tight">
-                  {(Number(platformStats?.[1]) / 1e18).toFixed(2)} ETH
+                  {(Number(platformStats?.[1]) / 1e18).toFixed(3)} ETH
                 </p>
                 <p className="text-sm text-blue-600 mt-1 font-medium tracking-wide">Donated</p>
               </div>
@@ -65,7 +65,7 @@ const Home: NextPage = () => {
                   <ShieldCheckIcon className="h-7 w-7 text-purple-600" />
                 </div>
                 <p className="text-3xl font-extrabold text-purple-700 leading-tight">
-                  {(Number(platformStats?.[2]) / 1e18).toFixed(2)} ETH
+                  {(Number(platformStats?.[2]) / 1e18).toFixed(3)} ETH
                 </p>
                 <p className="text-sm text-purple-600 mt-1 font-medium tracking-wide">Rewards paid</p>
               </div>

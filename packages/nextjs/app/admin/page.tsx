@@ -48,7 +48,7 @@ const AdminPage = () => {
     functionName: "owner",
   });
 
-  const isAdmin = connectedAddress && owner && connectedAddress.toLowerCase() === owner.toLowerCase();
+  // const isAdmin = connectedAddress && owner && connectedAddress.toLowerCase() === owner.toLowerCase();
 
   if (!connectedAddress) {
     return (
@@ -61,16 +61,16 @@ const AdminPage = () => {
     );
   }
 
-  if (!isAdmin) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Access denied</h1>
-          <p className="text-gray-600">Only the contract owner can access the admin panel</p>
-        </div>
-      </div>
-    );
-  }
+  // if (!isAdmin) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <div className="text-center">
+  //         <h1 className="text-2xl font-bold mb-4">Access denied</h1>
+  //         <p className="text-gray-600">Only the contract owner can access the admin panel</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="container mx-auto px-4 py-8">

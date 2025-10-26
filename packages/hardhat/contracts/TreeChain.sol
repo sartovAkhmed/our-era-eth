@@ -50,9 +50,9 @@ contract TreeChain is ERC721, Ownable, ReentrancyGuard {
     uint256 public totalRewardsPaid;
     
     // Цены и награды
-    uint256 public constant TREE_PRICE = 0.01 ether;  // Цена за посадку одного дерева
-    uint256 public constant EXECUTOR_REWARD = 0.008 ether;  // Награда исполнителю за одно дерево
-    uint256 public constant PLATFORM_FEE = 0.002 ether;  // Комиссия платформы за одно дерево
+    uint256 public constant TREE_PRICE = 0.005 ether;        // Цена за посадку одного дерева
+    uint256 public constant EXECUTOR_REWARD = 0.004 ether;   // Награда исполнителю за одно дерево
+    uint256 public constant PLATFORM_FEE = 0.001 ether;      // Комиссия платформы за одно дерево
 
     // ============ EVENTS ============
     
@@ -224,7 +224,7 @@ contract TreeChain is ERC721, Ownable, ReentrancyGuard {
      * @param treeId ID дерева
      * @param approved Одобрена ли посадка
      */
-    function verifyTree(uint256 treeId, bool approved) external onlyOwner {
+    function verifyTree(uint256 treeId, bool approved) external {
         require(treeId > 0 && treeId <= _treeIds, "Invalid tree ID");
         require(trees[treeId].executor != address(0), "Tree not planted yet");
         require(!trees[treeId].isVerified, "Tree already verified");

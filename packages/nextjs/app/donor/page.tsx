@@ -153,7 +153,7 @@ const DonorPage = () => {
   // Определяем отображаемую статистику в зависимости от типа донора
   const displayStats = donorType === "enterprise" ? enterpriseStats : userStats;
   const treesDonated = displayStats?.[0]?.toString() || "0";
-  const totalSpent = ((Number(treesDonated) || 0) * 0.01).toFixed(2);
+  const totalSpent = ((Number(treesDonated) || 0) * 0.005).toFixed(3);
 
   // Рассчитываем общую стоимость
   const totalCost = treePrice ? (Number(treePrice) / 1e18) * treeCount : 0;
